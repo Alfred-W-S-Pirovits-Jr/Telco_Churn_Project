@@ -4,8 +4,8 @@
 by: Alfred W. Pirovits
 
 <p>
-  <a href="https://github.com/mdalton87" target="_blank">
-    <img alt="Matthew" src="https://img.shields.io/github/followers/mdalton87?label=Follow_Matt&style=social" />
+  <a href="https://github.com/Alfred-W-S-Pirovits-Jr/telco_churn_project#top" target="_blank">
+    <img alt="" src="" />
   </a>
 </p>
 
@@ -26,7 +26,7 @@ ___
 
 ## <a name="project_description"></a>Project Description:
 [[Back to top](#top)]
-The purpose of this project is to determaine the main drivers of churn for the Telco Company and try and build a model that can predict, based on chosen factors, which customers will turn over and leave the company.  The analysis included looking at some 43 variables and determining which are most predictive of whether or not Telco will retain a customer.  Many of these were redundant columns.  Of those left, twenty one of showed a significant debendance between that variable and whether or not a customer churns.  The goals were to determine which of these factors had the most significant impact on customer retention.
+The purpose of this project is to determaine the main drivers of churn for the Telco Company and try and build a model that can predict, based on chosen factors, which customers will turn over and leave the company.  The analysis included looking at some 43 variables and determining which are most predictive of whether or not Telco will retain a customer.  Many of these were redundant columns.  Of those left, twentytwo of showed a significant dependance relationship between that variable and whether or not a customer churns.  The goals were to determine which of these factors had the most significant impact on customer retention.
 ***
 ## <a name="planning"></a>Project Planning:    
 [[Back to top](#top)]
@@ -36,11 +36,11 @@ The main goal of the project was to explore the data presented and see what I co
 - Explore the enormous dataset to find patterns
 - Organize features creating dummies where appropriate and eliminating redundant features
 - Run analysis to see what features are correlated/dependent to the target churn_Yes
--
+- Try and determine which factors are driving churn and which factors are more Confounding
 
         
 ### Hypothesis
-There were many hypotheses, however the general meta hypothesis was whether or not a churn was dependent on the features chosen one by one.  The general Null hypothesis was that the given feature and the target (churn_Yes) were independant while the Alternate Hypothesis was that they were dependent.  An alpha of 0.01 was chosen given the number of observations there were and the fact that there were so many features to choose from to analyze.  A secondary hypothesis was that there would be quite a few confounders in the dataset, but it proved difficult to extract the main drivers as it seemed difficult almost untenable to find the main driving factors amongst the sea of contributing factors.  In the end I found a combination of two factors which seemed to really be the driving force behind it all.   
+There were many hypotheses, however the general meta hypothesis was whether or not a churn was dependent on each of  the features chosen one by one.  The general Null hypothesis was that the given feature and the target (churn_Yes) were independant while the Alternate Hypothesis was that they were dependent.  An alpha of 0.01 was chosen given the number of observations there were and the fact that there were so many features to choose from to analyze.  A secondary hypothesis was that there would be quite a few confounders in the dataset, but it proved difficult to extract the main drivers as it seemed difficult almost untenable to find the main driving factors amongst the sea of contributing factors.  In the end I found a combination of two factors which seemed to really be the driving force behind it all.   
 
 
 ### Target variable
@@ -103,9 +103,9 @@ With more time, I would have liked to explore how I could combine multiple model
 [[Back to top](#top)]
 The key basic finding is that the most important driver of churn seems to be the relationship between how much customers pay and how long they have been customers.  Newer customers who pay more per month clearly leave at a significant rate while old customers who pay the least tend to stay.  Thus I created a new column representing the tenure to monthly charge ratio and saw this as even stronger than the next driver being the Month-to-month contracts.
 
-One thing to look at in the future is the viability of the Month-to-month contract since this is highly correlated with the high paying new customer.  This feature had the lowest p-value when compared to the churn column of any of the features with a result of ten to the minus 256 power.  
+One thing to look at in the future is the viability of the Month-to-month contract since this is highly correlated with the high paying new customer.  This feature had the lowest p-value when compared to the churn column of any of the original features with a p-value on the order of ten to the minus 256 power.  
 
-Now some may say that p-value does not indicate "more significance" however we should revisit what a p-value is.  It is the probability that this result would happen by chance if the Null Hypothesis were true.  This combined with the result about new customers churning at a higher rate seems to point to the fact that Telco needs to do something about the new customers if they wish to retain more of them.  One would be to lower their costs and another would seem to be to lock the customers into a longer term contract.  Presumably the month-to-month contract exists to entice customers to try out the service and that a higher turnover is to be expected.  However, a more in depth cost to benefit analysis is required to try and figure out if this is a good strategy or not.
+Now some may say that p-value does not indicate "more significance" however we should revisit what a p-value is.  It is the probability that this result would happen by chance if the Null Hypothesis were true.  This combined with the result about new customers churning at a higher rate seems to point to the fact that Telco needs to do something about the new customers if they wish to retain more of them.  One would be to lower their costs and another would seem to be to lock the customers into a longer term contract or entice them to purchase additional services.  Presumably the month-to-month contract exists to entice customers to try out the service and that a higher turnover is to be expected.  However, a more in depth cost to benefit analysis is required to try and figure out if this is a good strategy or not.
 
 
 
@@ -238,19 +238,18 @@ Thus I felt confident making the new column 'tenure_charge_ratio' as an added fe
     - The p-value of 1.5136016239109236e-110 showed a significant result
 -  These two tests combined convinced me that I was on the right track so I continued all models with this new column as an added feature
     
-#### Hypothesis:
-- The null hypothesis (H<sub>0</sub>) is 
-- The alternate hypothesis (H<sub>1</sub>) is 
-
-#### Confidence level and alpha value:
-- I established a 95% confidence level
-- alpha = 1 - confidence, therefore alpha is 0.05
 
 
 #### Results:
+All of the columns seemed highly correlated to the target variable.  However so many of the columns seemed to be confounding features to the main two drivers of the entire thing.  It is clear that the more that the customers pay per month and the shorter timeframe that they have been customers is a main driving force behind churn.  Secondary to this and also slightly confounding is whether or not the customers were on a Month-to-Month contract, which in terms of the original features had the most significant result upon the chi squared test.   
 
 
 #### Summary:
+That said it is difficult to rigorously rule out the confounding variables with the tools we have used up to this point in the course.  As such I am forced to rely on intuition to guess what the main drivers are.  The fact that the two that I have chosen are of high priority in the decision trees that I looked at as well as the fact that many of the columns seem to naturally clump together like having dependents and having multiple services and lines and thus being on a long term conract seem a natural consequence of the interrelated nature of these columns.  
+
+Given more time I would try to seperate out these confounding features more and see if I could get a more comprehensive picture on how these features clump together.  I did try a nested for loop to see if any columns were independent of others using the chi squared test.  That double loop was in my original exploration work and I used an alpha of .75.  This is not a statistical result per se but I just used a high alpha to see if I could extract out the columns that seem to be independent of any of the other columns.  I was then left with a set of columns that are totally dependent on all other columns and another set of columns that have less dependence on at least one other column.   Such an inquiry came up empty as there were time considerations, but I would, if given more time explore this further.  
+
+Also another driver seemed to be fiber optic.  There seemed to be a high proportion of fiber optic customers that were dissatisfied.  Interestingly enough the fiber optic ended up in the independent column which seems to indicate that it is a standalone feature that causes dissatisfaction.  There seeems to be less confounding factors with this feature.  Perhaps a deeper analysis into this feature will lead to stronger conclusions as to what is going on there.
 
 ***
 
