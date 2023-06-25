@@ -10,7 +10,12 @@ from sklearn.model_selection import train_test_split
 
 
 def prep_telco():
-    telco_churn_db = acquire.get_telco_data()
+    # Acquires the telco data
+    telco_churn_db = acquire.get_telco_data() 
+
+    #  Drops columns 'payment_type_id', 'internet_service_type_id', 'contract_type_id' and gets dummies for 
+    # 'gender', 'partner', 'dependents', 'phone_service', 'multiple_lines', 'online_security', 'online_backup', 'device_protection', 'tech_support', 'streaming_tv', 'streaming_movies', 'paperless_billing', 'churn', 'contract_type', 'internet_service_type', 'payment_type'
+    #  Didn't use for the final project
     telco_churn_db = telco_churn_db.drop(columns=['payment_type_id', 'internet_service_type_id', 'contract_type_id'])
     dummy_telco_churn_db = pd.get_dummies(telco_churn_db[['gender', 'partner', 'dependents', 'phone_service', 'multiple_lines', 'online_security', 'online_backup', 'device_protection', 'tech_support', 'streaming_tv', 'streaming_movies', 'paperless_billing', 'churn', 'contract_type', 'internet_service_type', 'payment_type']], dummy_na=False, drop_first=True)
     telco_churn_db = pd.concat([telco_churn_db, dummy_telco_churn_db], axis=1)
@@ -42,14 +47,19 @@ def prep_telco_alternative():
     return telco_churn_db
 
 def split_data(df, stratify_col):
+
+    # Splits the data into train, validate, and test sets with sizes .8,.2 and .2 respectively
     train_validate, test = train_test_split(df, test_size = .2, random_state=823, stratify=df[stratify_col])
     train, validate = train_test_split(train_validate, test_size=.25, random_state=823, stratify=train_validate[stratify_col])
     return train, validate, test
 
 def split_data_label(df, stratify_col, test_size=.2, validate_size=.2):
+
+    #  This version allows the user to specify the desired test size and validate size and divides the original dataframe accordingly.
     train_validate, test = train_test_split(df, test_size = .2, random_state=823, stratify=df[stratify_col])
     train, validate = train_test_split(train_validate, test_size= validate_size / (1 - test_size), random_state=823, stratify=train_validate[stratify_col])
     
+    #  This part seperates the data into the proper train validate and test sets assuming that the target variable is the same as column the user wants to stratify upon. 
     X_train = train.drop(columns=[stratify_col])
     y_train = train[stratify_col]
 
