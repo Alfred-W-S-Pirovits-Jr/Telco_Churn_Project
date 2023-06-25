@@ -35,6 +35,8 @@ The main goal of the project was to explore the data presented and see what I co
 ### Project Outline:
 - Explore the enormous dataset to find patterns
 - Organize features creating dummies where appropriate and eliminating redundant features
+- Run analysis to see what features are correlated/dependent to the target churn_Yes
+-
 
         
 ### Hypothesis
@@ -42,7 +44,7 @@ There were many hypotheses, however the general meta hypothesis was whether or n
 
 
 ### Target variable
-The target variable is churn_Yes, coded in boolean 0 or 1.  Zero for false and 1 for True.  
+The target variable is churn_Yes, coded in boolean 0 or 1.  Zero for False and 1 for True.  
 
 
 ### Need to haves (Deliverables):
@@ -99,9 +101,9 @@ With more time, I would have liked to explore how I could combine multiple model
 
 ## <a name="findings"></a>Key Findings:
 [[Back to top](#top)]
-The key basic finding is that the most important driver of churn seems to be the relationship between how much customers pay and how long they have been customers.  Newer customers who pay more per month clearly leave at a significant rate while old customers who pay the least tend to stay.
+The key basic finding is that the most important driver of churn seems to be the relationship between how much customers pay and how long they have been customers.  Newer customers who pay more per month clearly leave at a significant rate while old customers who pay the least tend to stay.  Thus I created a new column representing the tenure to monthly charge ratio and saw this as even stronger than the next driver being the Month-to-month contracts.
 
-One thing to look at in the future is the viability of the Month-to-month contract.  This feature had the lowest p-value when compared to the churn column of any of the features with a result of ten to the minus 256 power.  
+One thing to look at in the future is the viability of the Month-to-month contract since this is highly correlated with the high paying new customer.  This feature had the lowest p-value when compared to the churn column of any of the features with a result of ten to the minus 256 power.  
 
 Now some may say that p-value does not indicate "more significance" however we should revisit what a p-value is.  It is the probability that this result would happen by chance if the Null Hypothesis were true.  This combined with the result about new customers churning at a higher rate seems to point to the fact that Telco needs to do something about the new customers if they wish to retain more of them.  One would be to lower their costs and another would seem to be to lock the customers into a longer term contract.  Presumably the month-to-month contract exists to entice customers to try out the service and that a higher turnover is to be expected.  However, a more in depth cost to benefit analysis is required to try and figure out if this is a good strategy or not.
 
@@ -116,12 +118,29 @@ Now some may say that p-value does not indicate "more significance" however we s
 ---
 | Attribute | Definition | Data Type |
 | ----- | ----- | ----- |
-| | | |
-| | | |
-| | | |
-| | | |
-| | | |
-| | | |
+| senior_citizen | Whether the Customer is a Senior Citizen | int64 |
+| partner_Yes | Whether the Customer has a Partner| uint8 |
+| dependents_Yes | Whether the Customer has dependents | uint8 |
+| multiple_lines_Yes | Whether the Customer has multiple lines | uint8 |
+| online_security_Yes | Whether the Customer has subscribed to Online Security | uint8 |
+| online_backup_Yes | Whether the Customer has subscribed to Online Backup | uint8 |
+| device_protection_Yes | Whether the Customer has Opted into Device Protection | uint8 |
+| tech_support_Yes | Whether the Customer has Utilized Tech Support | uint8 |
+| streaming_tv_Yes | Whether the Customer has purchased Streaming TV | uint8 |
+| streaming_movies_Yes | Whether the Customer has purchased Streaming Movies| uint8 |
+| paperless_billing_Yes | Whether the Customer has Enrolled in Paperless Billing | uint8 |
+| churn_Yes | TARGET - Whether the Customer has Churned or Not | uint8 |
+| internet_service_type_Fiber optic | Whether the Customer has Purchased Fiber Optic Internet | uint8 |
+| internet_service_type_None | Indicates Whether the Customer has Opted out of Having Internet Service| uint8 |
+| payment_type_Credit card (automatic) | Whether the Customer Pays by Credit Card | uint8 |
+| payment_type_Electronic check | Whether the Customer Pays by Electronic Check | uint8 |
+| payment_type_Mailed check | Whether the Customer Pays by Mailed in Check | uint8 |
+| contract_type_Month-to-month | Whether the Customer has a Month-to-Month Contract Type | uint8 |
+| contract_type_One year | Whether the Customer has a One Year Contract Type  | uint8 |
+| contract_type_Two year | Whether the Customer has a Two Year Contract Type | uint8 |
+| tenure_charge_ratio | The Ratio of Customer Tenure over Monthly Charge Amount | float64 |
+| tenure_normalized | Normalized Length the Customer is with Telco | float64 |
+| monthly_charges_normalized | Normalized Monthly Charges | float64 |
 
 ***
 
@@ -152,46 +171,73 @@ Now some may say that p-value does not indicate "more significance" however we s
 ## <a name="stats"></a>Statistical Analysis
 [[Back to top](#top)]
 
-### Stats Test 1: ANOVA Test: One Way
+### Stats Test 1: Chi Squared Test
 
-Analysis of variance, or ANOVA, is a statistical method that separates observed variance data into different components to use for additional tests. 
-
-A one-way ANOVA is used for three or more groups of data, to gain information about the relationship between the dependent and independent variables: in this case our clusters vs. the log_error, respectively.
-
-To run the ANOVA test in Python use the following import: \
-<span style="color:green">from</span> scipy.stats <span style="color:green">import</span> f_oneway
-
-- f_oneway, in this case, takes in the individual clusters and returns the f-statistic, f, and the p_value, p:
-    - the f-statistic is simply a ratio of two variances. 
-    - The p_vlaue is the probability of obtaining test results at least as extreme as the results actually observed, under the assumption that the null hypothesis is correct
+The main statistical test used was the Chi Squared Test to determine dependence between the target variable churn_Yes and the features.  A for loop was used to run the Chi Squared test for each column that was a feature as compared to the target.  
 
 #### Hypothesis:
-- The null hypothesis (H<sub>0</sub>) is
-- The alternate hypothesis (H<sub>1</sub>) is 
+- The null hypothesis (H<sub>0</sub>) is that the target column (Churn_Yes) is independent of the column in question
+- The alternate hypothesis (H<sub>1</sub>) is that the target column (Churn_Yes) is dependent on the column in question
 
 #### Confidence level and alpha value:
-- I established a 95% confidence level
-- alpha = 1 - confidence, therefore alpha is 0.05
+- For the purposes of these tests, I used an alpha < 0.01 since the number of customers was high and there were so many features to choose from.
 
 #### Results:
+After removing the redundant columns in the original dataframe; "Unnamed: 0", "gender_male", "phone_service_Yes", "multiple_lines_No phone service" all did not meet the p-value we set and thus we didn't have sufficient evidence to reject the null hypothesis. I therefore dropped them all from the analysis. 
 
+"Unnamed: 0" is just an id number so it makes sense that they are independant events...kinda goes without saying but a good sanity check.
 
 #### Summary:
+This left us with 22 features and one target to work with which are as follows:
+'senior_citizen', 
+'partner_Yes', 
+'dependents_Yes', 
+'multiple_lines_Yes',
+'online_security_Yes', 
+'online_backup_Yes', 
+'device_protection_Yes',
+'tech_support_Yes', 
+'streaming_tv_Yes', 
+'streaming_movies_Yes',
+'paperless_billing_Yes',
+'internet_service_type_Fiber optic', 
+'internet_service_type_None',
+'payment_type_Credit card (automatic)', 
+'payment_type_Electronic check',
+'payment_type_Mailed check', 
+'contract_type_Month-to-month',
+'contract_type_One year', 
+'contract_type_Two year', 
+'tenure_normalized',
+'monthly_charges_normalized', 
+'churn_Yes'
+
+### Stats Test 2: Pearson Correlation
+- Looking at the scatterplot of the monthly charges vs tenure hued on churn, I decided that the tenure to charge ratio was an interesting new column I could make since it seemed new customers who pay a lot of money churn.  
+- I ran the Pearsonr Correlation test on the monthly charges and tenure in order to see how strong the correlation was
+#### Hypothesis:
+- The null hypothesis (H<sub>0</sub>) is  that there was no correlation
+- The alternate hypothesis (H<sub>1</sub>) is  that there is some correlation
+- An alpha < 0.05 was chosen
+    - An r value of 0.401285600132126 indicated a moderate correlation while
+    - The p-value of 3.0121978116585465e-73 showed a significant result
+    
+Thus I felt confident making the new column 'tenure_charge_ratio' as an added feature.  I also thought that this correlation might be stronger under a non-linear correlation test so I moved on to Spearman's Correlation
 
 
-### Stats Test 2: T-Test: One Sample, Two Tailed
-- A T-test allows me to compare a categorical and a continuous variable by comparing the mean of the continuous variable by subgroups based on the categorical variable
-- The t-test returns the t-statistic and the p-value:
-    - t-statistic: 
-        - Is the ratio of the departure of the estimated value of a parameter from its hypothesized value to its standard error. It is used in hypothesis testing via Student's t-test. 
-        - It is used in a t-test to determine if you should support or reject the null hypothesis
-        - t-statistic of 0 = H<sub>0</sub>
-    -  - the p-value:
-        - The probability of obtaining test results at least as extreme as the results actually observed, under the assumption that the null hypothesis is correct
-- We wanted to compare the individual clusters to the total population. 
-    - Cluster1 to the mean of ALL clusters
-    - Cluster2 to the mean of ALL clusters, etc.
+### Stats Test 3: Spearman Correlation
+- It was quite obvious that the regression line would be better fit if it were not linear.  So I ran a Spearman's Correlation test to make sure.  A stronger correlation with a curve bent toward the newest customers paying the most would present more evidence that using the newly made column would prove fruitful.
 
+
+- I ran the Spearman's Correlation test on the monthly charges and tenure in order to see how strong the correlation was
+#### Hypothesis:
+- The null hypothesis (H<sub>0</sub>) is  that there was no correlation
+- The alternate hypothesis (H<sub>1</sub>) is  that there is some (monotonically incresasing or decreasing) correlation
+- Again an alpha < 0.05 was chosen
+    - An r value of 0.4843751919531249 indicated a moderate but stronger correlation while
+    - The p-value of 1.5136016239109236e-110 showed a significant result
+-  These two tests combined convinced me that I was on the right track so I continued all models with this new column as an added feature
+    
 #### Hypothesis:
 - The null hypothesis (H<sub>0</sub>) is 
 - The alternate hypothesis (H<sub>1</sub>) is 
