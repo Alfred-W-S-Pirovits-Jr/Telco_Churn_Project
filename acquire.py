@@ -19,15 +19,15 @@ def get_telco_data():
     JOIN payment_types USING (payment_type_id);
     '''
     
-    # Creates a telco.csf from the query if there is none and returns the data.  If a csv already exists, it reads and returens it.
+    # Creates a telco.csv from the query if there is none and returns the data.  If a csv already exists, it reads and returens it.
     filename = 'telco.csv'
     if os.path.isfile(filename):
         return pd.read_csv(filename)
     else: 
-        #read the SQL query into a dataframe
+        #read the SQL query into a dataframe using user defined function get_db_url() from env.py file.  User may have to alter this argument to fit whatever is in their env.py file
         telco_churn_db = pd.read_sql(query, get_db_url('telco_churn'))
         
-        # Write that dataframe to disk for later.  Called "caching" the data for later.
+        # Write that dataframe the folder
         telco_churn_db.to_csv(filename)
         
     return telco_churn_db
