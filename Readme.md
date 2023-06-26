@@ -30,17 +30,20 @@ The purpose of this project is to determaine the main drivers of churn for the T
 ***
 ## <a name="planning"></a>Project Planning:    
 [[Back to top](#top)]
-The main goal of the project was to explore the data presented and see what I could discover.  Since there was a lot of data to go through, the main plan of the project was one of discovery.
+The main goal of the project was to explore the data presented and see what I could discover.  Since there was a lot of data to go through, the main plan of the project was one of discovery.  After discovering relationships I started to hone in on how to analyze the dataset.  Admittedly, it was hard to plan since this was my first attempt at such a project and I didn't know where to start.  I was also in the hospital when the project was launched so perhaps I missed some critical guidance.  Oh well, I learned much more this way and that is the point so...
 
 ### Project Outline:
 - Explore the enormous dataset to find patterns
 - Organize features creating dummies where appropriate and eliminating redundant features
 - Run analysis to see what features are correlated/dependent to the target churn_Yes
 - Try and determine which factors are driving churn and which factors are more Confounding
+- See if we can find the driving factors of churn
 
         
 ### Hypothesis
-There were many hypotheses, however the general meta hypothesis was whether or not a churn was dependent on each of  the features chosen one by one.  The general Null hypothesis was that the given feature and the target (churn_Yes) were independant while the Alternate Hypothesis was that they were dependent.  An alpha of 0.01 was chosen given the number of observations there were and the fact that there were so many features to choose from to analyze.  A secondary hypothesis was that there would be quite a few confounders in the dataset, but it proved difficult to extract the main drivers as it seemed difficult almost untenable to find the main driving factors amongst the sea of contributing factors.  In the end I found a combination of two factors which seemed to really be the driving force behind it all.   
+There were many hypotheses, however the general meta hypothesis was whether or not a churn was dependent on each of  the features chosen one by one.  The general Null hypothesis was that the given feature and the target (churn_Yes) were independant while the Alternate Hypothesis was that they were dependent.  An alpha of 0.01 was chosen given the number of observations there were and the fact that there were so many features to choose from to analyze.  
+
+A secondary hypothesis was that there would be quite a few confounders in the dataset, but it proved difficult to extract the main drivers as it seemed difficult almost untenable to find the main driving factors amongst the sea of contributing factors.  In the end I found a combination of two factors which seemed to really be the driving force behind it all.   The month-to-month contract and fiber optic customers seemed to churn much more than others.  Also new customers and customers paying more churned more than older customers paying less.
 
 
 ### Target variable
@@ -101,13 +104,13 @@ With more time, I would have liked to explore how I could combine multiple model
 
 ## <a name="findings"></a>Key Findings:
 [[Back to top](#top)]
-The key basic finding is that the most important driver of churn seems to be the relationship between how much customers pay and how long they have been customers.  Newer customers who pay more per month clearly leave at a significant rate while old customers who pay the least tend to stay.  Thus I created a new column representing the tenure to monthly charge ratio and saw this as even stronger than the next driver being the Month-to-month contracts.
+The key basic qualatative finding is that an important driver of churn seems to be the relationship between how much customers pay and how long they have been customers.  Newer customers who pay more per month clearly leave at a significant rate while old customers who pay the least tend to stay.  Thus I created a new column representing the tenure to monthly charge ratio and saw this as even stronger than the next driver being the Month-to-month contracts.
 
-One thing to look at in the future is the viability of the Month-to-month contract since this is highly correlated with the high paying new customer.  This feature had the lowest p-value when compared to the churn column of any of the original features with a p-value on the order of ten to the minus 256 power.  
+Quantitatively however, one thing to look at in the future is the viability of the Month-to-month contract since this is highly correlated with the high paying new customer.  This feature had the lowest p-value when compared to the churn column of any of the original features with a p-value on the order of ten to the minus 256 power. 
 
 Now some may say that p-value does not indicate "more significance" however we should revisit what a p-value is.  It is the probability that this result would happen by chance if the Null Hypothesis were true.  This combined with the result about new customers churning at a higher rate seems to point to the fact that Telco needs to do something about the new customers if they wish to retain more of them.  One would be to lower their costs and another would seem to be to lock the customers into a longer term contract or entice them to purchase additional services.  Presumably the month-to-month contract exists to entice customers to try out the service and that a higher turnover is to be expected.  However, a more in depth cost to benefit analysis is required to try and figure out if this is a good strategy or not.
 
-
+Next was the Fiber optic customers.  They did churn more than others.  Perhaps there is a problem with the Fiber Optic Service or perhaps this is correlated with paying more money and Customers don't find it worth the money.
 
 ***
 
@@ -146,7 +149,7 @@ Now some may say that p-value does not indicate "more significance" however we s
 
 ## <a name="wrangle"></a>Data Acquisition and Preparation
 [[Back to top](#top)]
-
+Basically I fumbled around until I figured it out little by litte.
 ![]()
 
 
@@ -158,14 +161,16 @@ Now some may say that p-value does not indicate "more significance" however we s
 ## <a name="explore"></a>Data Exploration:
 [[Back to top](#top)]
 - Python files used for exploration:
-    - wrangle.py 
-    - explore.py
-    - modeling.py
+    - wrangle.ipynb
+    - explore.ipynb
+    - modeling.ipynb
+    - classification_exercises.ipynb
+    - sub_final_report_with_independent_discovery.ipynb
 
 
 ### Takeaways from exploration:
 
-
+Main drivers are month-to-month contract, Fiber Optic customers and tenure/charge ratio
 ***
 
 ## <a name="stats"></a>Statistical Analysis
@@ -241,84 +246,17 @@ Thus I felt confident making the new column 'tenure_charge_ratio' as an added fe
 
 
 #### Results:
-All of the columns seemed highly correlated to the target variable.  However so many of the columns seemed to be confounding features to the main two drivers of the entire thing.  It is clear that the more that the customers pay per month and the shorter timeframe that they have been customers is a main driving force behind churn.  Secondary to this and also slightly confounding is whether or not the customers were on a Month-to-Month contract, which in terms of the original features had the most significant result upon the chi squared test.   
+All of the columns seemed highly correlated to the target variable.  However so many of the columns seemed to be confounding features to the main two drivers of the entire thing.  It is clear that the more that the customers pay per month and the shorter timeframe that they have been customers is a main driving force behind churn.  Secondary to this and also slightly confounding is whether or not the customers were on a Month-to-Month contract, which in terms of the original features had the most significant result upon the chi squared test.  Furthermore, Fiber Optic Customers seem to churn at quite a high rate.  This could be a result of presumably a high price and its not worth it for them or there might be something wrong with the service.
 
 
 #### Summary:
-That said it is difficult to rigorously rule out the confounding variables with the tools we have used up to this point in the course.  As such I am forced to rely on intuition to guess what the main drivers are.  The fact that the two that I have chosen are of high priority in the decision trees that I looked at as well as the fact that many of the columns seem to naturally clump together like having dependents and having multiple services and lines and thus being on a long term conract seem a natural consequence of the interrelated nature of these columns.  
+That said it is difficult to rigorously rule out the confounding variables with the tools we have used up to this point in the course.  As such I am forced to rely on intuition to guess what the main drivers are rather than prove.  The fact that the two that I have chosen are of high priority in the decision trees that I looked at as well as the fact that many of the columns seem to naturally clump together like having dependents and having multiple services and lines and thus being on a long term conract seem a natural consequence of the interrelated nature of these columns.  
 
 Given more time I would try to seperate out these confounding features more and see if I could get a more comprehensive picture on how these features clump together.  I did try a nested for loop to see if any columns were independent of others using the chi squared test.  That double loop was in my original exploration work and I used an alpha of .75.  This is not a statistical result per se but I just used a high alpha to see if I could extract out the columns that seem to be independent of any of the other columns.  I was then left with a set of columns that are totally dependent on all other columns and another set of columns that have less dependence on at least one other column.   Such an inquiry came up empty as there were time considerations, but I would, if given more time explore this further.  
 
 Also another driver seemed to be fiber optic.  There seemed to be a high proportion of fiber optic customers that were dissatisfied.  Interestingly enough the fiber optic ended up in the independent column which seems to indicate that it is a standalone feature that causes dissatisfaction.  There seeems to be less confounding factors with this feature.  Perhaps a deeper analysis into this feature will lead to stronger conclusions as to what is going on there.
 
 ***
-
-## <a name="model"></a>Modeling:
-[[Back to top](#top)]
-
-### Model Preparation:
-
-### Baseline
-    
-- Baseline Results: 
-    
-
-- Selected features to input into models:
-    - features = []
-
-***
-
-### Models and R<sup>2</sup> Values:
-- Will run the following regression models:
-
-    
-
-- Other indicators of model performance with breif defiition and why it's important:
-
-    
-    
-#### Model 1: Linear Regression (OLS)
-
-
-- Model 1 results:
-
-
-
-### Model 2 : Lasso Lars Model
-
-
-- Model 2 results:
-
-
-### Model 3 : Tweedie Regressor (GLM)
-
-- Model 3 results:
-
-
-### Model 4: Quadratic Regression Model
-
-- Model 4 results:
-
-
-## Selecting the Best Model:
-
-### Use Table below as a template for all Modeling results for easy comparison:
-
-| Model | Validation/Out of Sample RMSE | R<sup>2</sup> Value |
-| ---- | ----| ---- |
-| Baseline | 0.167366 | 2.2204 x 10<sup>-16</sup> |
-| Linear Regression (OLS) | 0.166731 | 2.1433 x 10<sup>-3</sup> |  
-| Tweedie Regressor (GLM) | 0.155186 | 9.4673 x 10<sup>-4</sup>|  
-| Lasso Lars | 0.166731 | 2.2204 x 10<sup>-16</sup> |  
-| Quadratic Regression | 0.027786 | 2.4659 x 10<sup>-3</sup> |  
-
-
-- {} model performed the best
-
-
-## Testing the Model
-
-- Model Testing Results
 
 ***
 
