@@ -39,12 +39,38 @@ def prep_telco_alternative():
     
     # Dropping all object columns as they are redundant and coded in other columns.
     
-    telco_churn_db = telco_churn_db.drop(columns=telco_churn_db.select_dtypes(exclude='number').columns)
+    telco_churn_db = telco_churn_db.drop(columns=telco_churn_db.select_dtypes(exclude='number').columns)#['gender', 'partner', 'dependents', 'phone_service', 'multiple_lines', 'online_security', 'online_backup', 'device_protection', 'tech_support', 'streaming_tv', 'streaming_movies', 'paperless_billing', 'total_charges', 'churn', 'contract_type', 'internet_service_type', 'payment_type'])
 
     # Drop all no_internet service columns from dataframe because it is redundant with internet service type none
     telco_churn_db = telco_churn_db.drop(columns=['online_backup_No internet service', 'device_protection_No internet service', 'tech_support_No internet service', 'streaming_tv_No internet service', 'streaming_movies_No internet service', 'online_security_No internet service'])
     
     return telco_churn_db
+
+def prep_telco_with_customer_id():
+    telco_churn_db = acquire.get_telco_data()
+
+    #Drops the id columns because they will throw off the results of the ML models and are not correlated with churn
+    telco_churn_db = telco_churn_db.drop(columns=['payment_type_id', 'internet_service_type_id', 'contract_type_id'])
+    
+    #Create a dummy column for gender, partner, dependents, phone_service, multiple_lines, online_security, online_backup, device_protection, tech_support, streaming_tv, streaming_movies, paperless_billing, churn, internet_service_type, and payment_type columns.
+    #These dummies will drop the first column
+    dummy_telco_churn_db = pd.get_dummies(telco_churn_db[['gender', 'partner', 'dependents', 'phone_service', 'multiple_lines', 'online_security', 'online_backup', 'device_protection', 'tech_support', 'streaming_tv', 'streaming_movies', 'paperless_billing', 'churn', 'internet_service_type', 'payment_type']], dummy_na=False, drop_first=True)
+    
+    #Since month-to-month seems VERY correlated to churn rate I am not dropping first when doing contract type specifically for knn nearest neighbors where I have to cut down the dimensions and choose the best correlated issues.  
+    #I expect the decision trees to give me more intuition on the most highly correlated dimensions to choose
+    
+    dummy_telco_churn_db_first = pd.get_dummies(telco_churn_db[['contract_type']], dummy_na=False, drop_first=False) 
+    telco_churn_db = pd.concat([telco_churn_db, dummy_telco_churn_db, dummy_telco_churn_db_first], axis=1)
+    
+    # Dropping all object columns as they are redundant and coded in other columns.
+    
+    telco_churn_db = telco_churn_db.drop(columns=['gender', 'partner', 'dependents', 'phone_service', 'multiple_lines', 'online_security', 'online_backup', 'device_protection', 'tech_support', 'streaming_tv', 'streaming_movies', 'paperless_billing', 'total_charges', 'churn', 'contract_type', 'internet_service_type', 'payment_type'])
+
+    # Drop all no_internet service columns from dataframe because it is redundant with internet service type none
+    telco_churn_db = telco_churn_db.drop(columns=['online_backup_No internet service', 'device_protection_No internet service', 'tech_support_No internet service', 'streaming_tv_No internet service', 'streaming_movies_No internet service', 'online_security_No internet service'])
+    
+    return telco_churn_db
+
 
 def split_data(df, stratify_col):
 
