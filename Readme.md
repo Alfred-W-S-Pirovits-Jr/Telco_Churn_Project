@@ -261,4 +261,9 @@ Also another driver seemed to be fiber optic.  There seemed to be a high proport
 ***
 
 ## <a name="conclusion"></a>Conclusion:
+I admittedly did not set goals properly when starting this project and just jumped right in.  I went all over the place but eventually came upon the proper answers.  The two main drivers of churn in terms of features were whether the customer had a month-to-month contract and whether the customer had fiber optic service.  These two alone seem to explain sixty two percent of the churning customers.  However qualitatively the newer the customer and the more they are paying per month, the higher the churn rate while longer term customers paying less seem to stay with the company.
+
+There are many confounding features that make this analysis hard but I believe I have found the foundation of the mass of churning customers.  The remaining thirty eight percent of the customers can be analized in a further study.
+
+As for the drivers that I found: Presumably the month-to-month contract is designed to entice new customers and thus will naturally have a higher churn rate.  Further inquiry into the phenomenon might provide insight into how to keep these customers i.e. giving them a discount or combining services in order to keep them.  However, there is something going on with Fiber Optic Service.  Perhaps it is expensive and customers don't feel it is worth the cost, or perhaps it is unreliable.  More information is needed in order to address these questions.
 [[Back to top](#top)]
